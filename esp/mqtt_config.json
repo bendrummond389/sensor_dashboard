@@ -5,4 +5,5 @@
   "BROKER_USER": null,
   "BROKER_PASS": null,
   "SENSOR_DATA_TOPIC": "water_sensor_channel"
+
 }

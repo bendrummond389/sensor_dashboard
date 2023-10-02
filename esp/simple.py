@@ -1,3 +1,17 @@
+"""
+simple.py
+
+This file is part of the MicroPython project, http://micropython.org/
+
+The MIT License (MIT)
+Copyright (c) 2014-2018 MicroPython Developers
+
+Author: MicroPython Developers
+Maintainers: micropython-lib
+
+Disclaimer: This file is included in this repository for dependency reasons and is not authored or modified by this project's maintainers. All rights and credits go to the original authors and maintainers.
+"""
+
 import usocket as socket
 import ustruct as struct
 from ubinascii import hexlify

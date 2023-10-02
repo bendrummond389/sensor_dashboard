@@ -52,10 +52,8 @@ def main():
                 client.check_msg()
                 time.sleep(1)
             except KeyboardInterrupt:
-                print("DEBUG: Disconnected from MQTT broker.")
                 break
             except:
-                print("DEBUG: An error occurred. Trying to reconnect.")
                 client = connect_to_broker()
                 time.sleep(5)
 
