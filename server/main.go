@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
@@ -8,6 +9,22 @@ import (
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
+
+// DeviceInfo represents the JSON payload received from the sensor
+type DeviceInfo struct {
+	DeviceID  string `json:"device_id"`
+	DataTopic string `json:"data_topic"`
+}
+
+// extractDeviceInfo parses the JSON payload to extract device information
+func extractDeviceInfo(payload []byte) (*DeviceInfo, error) {
+	var info DeviceInfo
+	if err := json.Unmarshal(payload, &info); err != nil {
+		return nil, err
+	}
+	return &info, nil
+}
+
 
 func main() {
 	// Initialize MQTT broker settings
@@ -35,8 +52,14 @@ func main() {
 	// Subscribe to the main channel
 	mainTopic := "sensor"
 	client.Subscribe(mainTopic, 0, func(client mqtt.Client, msg mqtt.Message) {
-		// Print the received message
-		fmt.Printf("Received message on topic %s: %s\n", msg.Topic(), string(msg.Payload()))
+		// Extract device info from the JSON payload
+		deviceInfo, err := extractDeviceInfo(msg.Payload())
+		if err != nil {
+			log.Printf("Failed to extract device info: %v", err)
+			return
+		}
+
+		fmt.Printf("Received device info: %+v\n", deviceInfo)
 	})
 
 	// Keep the application running
