@@ -1,0 +1,15 @@
+version: '3'
+services:
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile.server
+    ports:
+      - "8080:8080"
+  mqtt:
+    build:
+      context: ./mqtt
+      dockerfile: Dockerfile.mqtt
+    ports:
+      - "1883:1883"
+      - "9001:9001"
