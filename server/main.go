@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"strings"
+	"sync"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
@@ -27,6 +28,10 @@ func extractDeviceInfo(payload []byte) (*DeviceInfo, error) {
 
 
 func main() {
+	// Initialize a map to hold the last reading for each sensor
+	var sensorData = make(map[string]string)
+	var sensorDataMutex = &sync.Mutex{}
+
 	// Initialize MQTT broker settings
 	mqttBroker := os.Getenv("MQTT_BROKER")
 	if mqttBroker == "" {
@@ -60,6 +65,17 @@ func main() {
 		}
 
 		fmt.Printf("Received device info: %+v\n", deviceInfo)
+
+		// Subscribe to the device's data topic
+		client.Subscribe(deviceInfo.DataTopic, 0, func(client mqtt.Client, msg mqtt.Message) {
+			// Update the last reading for this sensor
+			sensorDataMutex.Lock()
+			sensorData[deviceInfo.DeviceID] = string(msg.Payload())
+			sensorDataMutex.Unlock()
+
+			fmt.Printf("Received data on topic %s: %s\n", msg.Topic(), string(msg.Payload()))
+			fmt.Printf("Current sensor data: %+v\n", sensorData)
+		})
 	})
 
 	// Keep the application running
