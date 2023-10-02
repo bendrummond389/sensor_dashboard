@@ -9,42 +9,36 @@ import (
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
 
-// type SensorInfo struct {
-// 	Device    string `json:"device"`
-// 	MqttTopic string `json:"mqtt_topic"`
-// }
-
 func main() {
+	// Initialize MQTT broker settings
 	mqttBroker := os.Getenv("MQTT_BROKER")
 	if mqttBroker == "" {
-		mqttBroker = "localhost" // Default
+		mqttBroker = "localhost" // Default broker address
 	}
 
-	// append port if not already specified
+	// Append port if not specified
 	if !strings.Contains(mqttBroker, ":") {
 		mqttBroker = fmt.Sprintf("%s:1883", mqttBroker)
 	}
-	fmt.Printf("MQTT Broker set to %s \n", mqttBroker)
+	fmt.Printf("MQTT Broker set to %s\n", mqttBroker)
 
-
-	// set up client 
+	// Set up MQTT client options
 	opts := mqtt.NewClientOptions().AddBroker("tcp://" + mqttBroker).SetClientID("go-server")
-	client := mqtt.NewClient(opts)
 
+	// Connect to MQTT broker
+	client := mqtt.NewClient(opts)
 	if token := client.Connect(); token.Wait() && token.Error() != nil {
-		log.Fatal(token.Error())
+		log.Fatal("Failed to connect to MQTT broker:", token.Error())
 	}
 	fmt.Printf("Connected to MQTT broker at %s\n", mqttBroker)
 
-
-	// connect to main channel 
+	// Subscribe to the main channel
 	mainTopic := "sensor"
 	client.Subscribe(mainTopic, 0, func(client mqtt.Client, msg mqtt.Message) {
-		// Print the raw JSON payload
+		// Print the received message
 		fmt.Printf("Received message on topic %s: %s\n", msg.Topic(), string(msg.Payload()))
 	})
 
-
-	select{}
-
+	// Keep the application running
+	select {}
 }
