@@ -4,5 +4,5 @@
   "MQTT_PORT": 1883,
   "MQTT_USER": null,
   "MQTT_PASS": null,
-  "MQTT_TOPIC": "water_sensor_channel"
+  "SENSOR_TOPIC": "water_sensor_channel"
 }

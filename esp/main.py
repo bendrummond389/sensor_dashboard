@@ -16,7 +16,7 @@ config = load_config()
 
 MQTT_BROKER = config.get("MQTT_BROKER", "default_broker")
 MQTT_PORT = config.get("MQTT_PORT", 1883)
-MQTT_TOPIC = config.get("MQTT_TOPIC", "default_topic")
+SENSOR_TOPIC = config.get("SENSOR_TOPIC", "default_topic")
 DEVICE_CHANNEL= config.get("DEVICE_CHANNEL", "default")
 
 CLIENT_ID = "water_sensor"
@@ -29,7 +29,6 @@ def connect_mqtt():
         client = MQTTClient(CLIENT_ID, MQTT_BROKER, port=MQTT_PORT)
         client.set_callback(mqtt_callback)
         client.connect()
-        client.subscribe(MQTT_TOPIC)
         return client
     except Exception as e:
         print(f"Exception during MQTT connection: {e}")
@@ -42,7 +41,7 @@ def main():
         # Send initial sensor info
         sensor_info = {
             "device": CLIENT_ID,
-            "MQTT_TOPIC": MQTT_TOPIC,
+            "mqtt_topic": SENSOR_TOPIC,
         }
         client.publish(DEVICE_CHANNEL, json.dumps(sensor_info))
         
@@ -50,7 +49,7 @@ def main():
             try:
                 sensor_value = read_sensor()
                 print(f"DEBUG: Water sensor value: {sensor_value}")
-                client.publish(MQTT_TOPIC, str(sensor_value))
+                client.publish(SENSOR_TOPIC, str(sensor_value))
                 client.wait_msg()
                 time.sleep(1)
             except KeyboardInterrupt:
