@@ -17,6 +17,7 @@ config = load_config()
 MQTT_BROKER = config.get("MQTT_BROKER", "default_broker")
 MQTT_PORT = config.get("MQTT_PORT", 1883)
 MQTT_TOPIC = config.get("MQTT_TOPIC", "default_topic")
+DEVICE_CHANNEL= config.get("DEVICE_CHANNEL", "default")
 
 CLIENT_ID = "water_sensor"
 
@@ -37,6 +38,14 @@ def connect_mqtt():
 def main():
     client = connect_mqtt()
     if client:
+        
+        # Send initial sensor info
+        sensor_info = {
+            "device": CLIENT_ID,
+            "MQTT_TOPIC": MQTT_TOPIC,
+        }
+        client.publish(DEVICE_CHANNEL, json.dumps(sensor_info))
+        
         while True:
             try:
                 sensor_value = read_sensor()

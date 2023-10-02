@@ -1,7 +1,8 @@
 {
+  "DEVICE_CHANNEL": "sensor",
   "MQTT_BROKER": "192.168.2.172",
   "MQTT_PORT": 1883,
   "MQTT_USER": null,
   "MQTT_PASS": null,
-  "MQTT_TOPIC": "test_topic"
+  "MQTT_TOPIC": "water_sensor_channel"
 }

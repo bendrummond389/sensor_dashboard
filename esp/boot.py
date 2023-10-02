@@ -4,6 +4,10 @@ import time
 def connect_wifi():
     wlan = network.WLAN(network.STA_IF)
     wlan.active(True)
+    ssid = 'CasaLindaFiber'
+    password = '10Strings'
+    
+    
 
     retries = 5 
     
@@ -11,7 +15,7 @@ def connect_wifi():
         print('Attempting to connect to network...')
         
         if not wlan.isconnected():
-            wlan.connect('CasaLindaFiber', '10Strings') 
+            wlan.connect(ssid, password) 
 
             for i in range(10):
                 if wlan.isconnected():
@@ -21,6 +25,7 @@ def connect_wifi():
         retries -= 1
         
         if wlan.isconnected():
+            print(f'connected to {ssid}')
             print('Network config:', wlan.ifconfig())
             break 
         else:
