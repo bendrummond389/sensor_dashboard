@@ -49,7 +49,7 @@ def main():
                 sensor_value = read_sensor()
                 print(f"DEBUG: Water sensor value: {sensor_value}")
                 client.publish(SENSOR_DATA_TOPIC, str(sensor_value))
-                client.wait_msg()
+                client.check_msg()
                 time.sleep(1)
             except KeyboardInterrupt:
                 print("DEBUG: Disconnected from MQTT broker.")
