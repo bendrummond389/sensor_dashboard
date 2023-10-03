@@ -36,7 +36,7 @@ This project aims to simplify home automation by providing an easy-to-use IoT so
 3. **Configure Microcontroller**
 
     Modify the `config.json` file on the microcontroller with your MQTT broker URL, SSID, and password.
-    add your sensor specific code to sensor.py
+    Add your sensor specific code to sensor.py.
 
 4. **Access Dashboard**
 
@@ -51,6 +51,8 @@ Edit the `config.json` file to include:
 - `mqtt_broker_url`: URL of your MQTT broker
 - `ssid`: Your WiFi SSID
 - `password`: Your WiFi password
+
+Additionally, modify the `sensor.py` file to fit your specific sensor setup.
 
 ### MQTT Broker
 
