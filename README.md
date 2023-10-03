@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project aims to simplify home automation by providing an easy-to-use IoT solution. It utilizes microcontrollers running MicroPython, MQTT for messaging, and a Next.js dashboard for monitoring and control. The entire stack can be containerized using Docker, making it easy to deploy even on a Raspberry Pi.
+This project aims to simplify home automation by providing an easy-to-use IoT solution. It utilizes microcontrollers running MicroPython, MQTT for data transmission, and a Next.js dashboard for monitoring and control. The entire stack can be containerized using Docker, making it easy to deploy even on a Raspberry Pi.
 
 ## Features
 
