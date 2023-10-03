@@ -19,6 +19,7 @@ BROKER_PORT = config.get("BROKER_PORT", 1883)
 SENSOR_DATA_TOPIC = config.get("SENSOR_DATA_TOPIC", "default_topic")
 DISCOVERY_CHANNEL = config.get("DISCOVERY_CHANNEL", "default")
 
+
 DEVICE_ID = "water_sensor"
 
 def mqtt_callback(topic, msg):

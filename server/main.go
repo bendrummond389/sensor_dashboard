@@ -7,6 +7,7 @@ import (
 	"os"
 	"strings"
 	"sync"
+	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
@@ -19,14 +20,28 @@ type DeviceInfo struct {
 var sensorData = make(map[string]string)
 var sensorDataMutex = &sync.Mutex{}
 
-func initMQTTClient(broker string) mqtt.Client {
+func initMQTTClientWithRetry(broker string, maxRetries int) mqtt.Client {
+	var client mqtt.Client
 	opts := mqtt.NewClientOptions().AddBroker("tcp://" + broker).SetClientID("go-server")
-	client := mqtt.NewClient(opts)
-	if token := client.Connect(); token.Wait() && token.Error() != nil {
-		log.Fatal("Failed to connect to MQTT broker:", token.Error())
+
+	for i := 0; i < maxRetries; i++ {
+		client = mqtt.NewClient(opts)
+		if token := client.Connect(); token.Wait() && token.Error() != nil {
+			log.Printf("Failed to connect to MQTT broker, attempt %d: %s", i+1, token.Error())
+			time.Sleep(5 * time.Second)
+		} else {
+			log.Printf("Successfully connected to MQTT broker")
+			break
+		}
 	}
+
+	if client == nil || !client.IsConnected() {
+		log.Fatal("Failed to connect to MQTT broker after max retries")
+	}
+
 	return client
 }
+
 
 func extractDeviceInfo(payload []byte) (*DeviceInfo, error) {
 	var info DeviceInfo
@@ -62,7 +77,7 @@ func main() {
 		mqttBroker = fmt.Sprintf("%s:1883", mqttBroker)
 	}
 
-	client := initMQTTClient(mqttBroker)
+	client := initMQTTClientWithRetry(mqttBroker, 5)
 	fmt.Printf("Connected to MQTT broker at %s\n", mqttBroker)
 
 	mainTopic := "sensor"
