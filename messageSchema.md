@@ -74,7 +74,6 @@ All messages should adhere to the following JSON schema:
 
 ### Sensor Discovery Response
 ```json
-Copy code
 {
   "type": "sensor_discovery_response",
   "device_id": "device_123",
