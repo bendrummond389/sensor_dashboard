@@ -49,15 +49,15 @@ All messages should adhere to the following JSON schema:
 - Type: sensor_discovery_response
 - Direction: Microcontroller to Server
 - Data Fields:
-- data_topic: The MQTT topic the sensor will publish data to.
+    - data_topic: The MQTT topic the sensor will publish data to.
 - Description: Sent by the microcontroller in response to a sensor discovery request.
 
 ### Sensor Data
 - Type: sensor_data
 - Direction: Microcontroller to Server
 - Data Fields:
-- temperature: Temperature reading.
-- humidity: Humidity reading.
+    - temperature: Temperature reading.
+    - humidity: Humidity reading.
 - Description: Regular sensor data sent by the microcontroller.
 
 ## Example Messages
