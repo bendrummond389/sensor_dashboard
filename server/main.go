@@ -17,8 +17,40 @@ type DeviceInfo struct {
 	DataTopic string `json:"data_topic"`
 }
 
-var sensorData = make(map[string]string)
-var sensorDataMutex = &sync.Mutex{}
+type TopicListener struct {
+	client       mqtt.Client
+	topic        string
+	sensorData   map[string]string
+	sensorDataMu *sync.Mutex
+}
+
+func (tl *TopicListener) MessageHandler(client mqtt.Client, msg mqtt.Message) {
+	tl.sensorDataMu.Lock()
+	tl.sensorData[msg.Topic()] = string(msg.Payload())
+	tl.sensorDataMu.Unlock()
+
+	fmt.Printf("Received data on topic %s: %s\n", msg.Topic(), string(msg.Payload()))
+	fmt.Printf("Current sensor data: %+v\n", tl.sensorData)
+}
+
+func NewTopicListener(client mqtt.Client, topic string) *TopicListener {
+	listener := &TopicListener{
+		client:       client,
+		topic:        topic,
+		sensorData:   make(map[string]string),
+		sensorDataMu: &sync.Mutex{},
+	}
+	client.Subscribe(topic, 0, listener.MessageHandler)
+	return listener
+}
+
+func extractDeviceInfo(payload []byte) (*DeviceInfo, error) {
+	var info DeviceInfo
+	if err := json.Unmarshal(payload, &info); err != nil {
+		return nil, err
+	}
+	return &info, nil
+}
 
 func initMQTTClientWithRetry(broker string, maxRetries int) mqtt.Client {
 	var client mqtt.Client
@@ -42,32 +74,6 @@ func initMQTTClientWithRetry(broker string, maxRetries int) mqtt.Client {
 	return client
 }
 
-
-func extractDeviceInfo(payload []byte) (*DeviceInfo, error) {
-	var info DeviceInfo
-	if err := json.Unmarshal(payload, &info); err != nil {
-		return nil, err
-	}
-	return &info, nil
-}
-
-func handleSensorData(client mqtt.Client, msg mqtt.Message) {
-	deviceInfo, err := extractDeviceInfo(msg.Payload())
-	if err != nil {
-		log.Printf("Failed to extract device info: %v", err)
-		return
-	}
-
-	client.Subscribe(deviceInfo.DataTopic, 0, func(client mqtt.Client, msg mqtt.Message) {
-		sensorDataMutex.Lock()
-		sensorData[deviceInfo.DeviceID] = string(msg.Payload())
-		sensorDataMutex.Unlock()
-
-		fmt.Printf("Received data on topic %s: %s\n", msg.Topic(), string(msg.Payload()))
-		fmt.Printf("Current sensor data: %+v\n", sensorData)
-	})
-}
-
 func main() {
 	mqttBroker := os.Getenv("MQTT_BROKER")
 	if mqttBroker == "" {
@@ -81,7 +87,16 @@ func main() {
 	fmt.Printf("Connected to MQTT broker at %s\n", mqttBroker)
 
 	mainTopic := "sensor"
-	client.Subscribe(mainTopic, 0, handleSensorData)
+
+	client.Subscribe(mainTopic, 0, func(client mqtt.Client, msg mqtt.Message) {
+		deviceInfo, err := extractDeviceInfo(msg.Payload())
+		if err != nil {
+			log.Printf("Failed to extract device info: %v", err)
+			return
+		}
+
+		NewTopicListener(client, deviceInfo.DataTopic)
+	})
 
 	select {}
 }
