@@ -1,10 +1,11 @@
 {
-  "SSID": "your-ssid",
-  "WIFI_PASSWORD": "your-wifi-password",
-  "DISCOVERY_CHANNEL": "sensor",
+  "SSID": "CasaLindaFiber",
+  "WIFI_PASSWORD": "10Strings",
+  "DISCOVERY_CHANNEL": "main",
   "BROKER_ADDRESS": "192.168.2.172",
   "BROKER_PORT": 1883,
   "BROKER_USER": null,
   "BROKER_PASS": null,
-  "SENSOR_DATA_TOPIC": "water_sensor_channel"
+  "SENSOR_DATA_TOPIC": "water_sensor_channel",
+  "DEVICE_ID": "water_sensor"
 }
