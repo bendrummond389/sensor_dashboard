@@ -1,6 +1,6 @@
 {
-  "SSID": "CasaLindaFiber",
-  "WIFI_PASSWORD": "10Strings",
+  "SSID": "ssid-goes-here",
+  "WIFI_PASSWORD": "password-goes-here",
   "DISCOVERY_CHANNEL": "main",
   "BROKER_ADDRESS": "192.168.2.172",
   "BROKER_PORT": 1883,
