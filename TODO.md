@@ -7,6 +7,8 @@ This document outlines the tasks that need to be completed for this project. Eac
 - [ ] Add comments to the code using ChatGPT for clearer documentation.
 - [ ] Implement a task listener as demonstrated in `main.go.txt`.
 - [ ] Create a Raspberry Pi OS image with all necessary setups, enabling users to flash it onto their devices and get started immediately.
+- [ ] Figure out a way to set heartbeat listener without using a global client
+
 
 ## In Progress
 
