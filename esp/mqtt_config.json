@@ -2,7 +2,7 @@
   "SSID": "ssid-goes-here",
   "WIFI_PASSWORD": "password-goes-here",
   "DISCOVERY_CHANNEL": "main",
-  "BROKER_ADDRESS": "192.168.2.172",
+  "BROKER_ADDRESS": "mqtt-server-address-goes-here",
   "BROKER_PORT": 1883,
   "BROKER_USER": null,
   "BROKER_PASS": null,
